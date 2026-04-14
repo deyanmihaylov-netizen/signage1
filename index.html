@@ -7,35 +7,41 @@
 <style>
 body {
   margin: 0;
-  background: #0b1220;
+  background: linear-gradient(135deg, #0f172a, #020617);
   color: white;
   font-family: Arial;
   overflow: hidden;
 }
 
+/* Лого */
+#logo {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  height: 110px;
+}
+
+/* Час */
 #clock {
-  font-size: 90px;
+  font-size: 100px;
   font-weight: bold;
 }
 
+/* Дата */
 #date {
-  font-size: 30px;
+  font-size: 28px;
 }
 
+/* Време */
 #weather {
   position: absolute;
   top: 30px;
   right: 40px;
-  font-size: 28px;
+  font-size: 26px;
+  text-align: right;
 }
 
-#logo {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  height: 120px;
-}
-
+/* Галерия */
 #gallery {
   position: absolute;
   top: 180px;
@@ -43,24 +49,26 @@ body {
   height: 55%;
 }
 
-#gallery iframe {
+#gallery img {
   width: 100%;
   height: 100%;
-  border: none;
+  object-fit: cover;
+  transition: opacity 1s ease-in-out;
 }
 
+/* Лента */
 #ticker {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background: #111827;
+  background: rgba(0,0,0,0.7);
   padding: 15px 0;
 }
 
 #ticker-text {
   white-space: nowrap;
   display: inline-block;
-  animation: scroll 20s linear infinite;
+  animation: scroll 25s linear infinite;
   font-size: 32px;
 }
 
@@ -70,7 +78,7 @@ body {
 }
 
 .container {
-  padding: 150px 40px 40px 40px;
+  padding: 150px 40px;
 }
 </style>
 </head>
@@ -87,31 +95,64 @@ body {
 <div id="weather">Зареждане...</div>
 
 <div id="gallery">
-  <iframe src="https://klimentvarna.com"></iframe>
+  <img id="slide" src="">
 </div>
 
 <div id="ticker">
-  <div id="ticker-text">📢 Добре дошли в СУ "Св. Климент Охридски"</div>
+  <div id="ticker-text"></div>
 </div>
 
 <script>
+// ЧАС
 function updateClock() {
   const now = new Date();
-
-  document.getElementById('clock').innerText =
-    now.toLocaleTimeString('bg-BG', {hour: '2-digit', minute: '2-digit'});
-
-  document.getElementById('date').innerText =
-    now.toLocaleDateString('bg-BG', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  clock.innerText = now.toLocaleTimeString('bg-BG',{hour:'2-digit',minute:'2-digit'});
+  date.innerText = now.toLocaleDateString('bg-BG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 }
-
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
 
+// ВРЕМЕ
 fetch('https://wttr.in/Varna?format=3')
-  .then(r => r.text())
-  .then(t => document.getElementById('weather').innerText = t)
-  .catch(() => document.getElementById('weather').innerText = "Няма данни");
+.then(r=>r.text())
+.then(t=>weather.innerText=t)
+.catch(()=>weather.innerText="Няма данни");
+
+// ГАЛЕРИЯ (добавяш снимки тук)
+const images = [
+  "img1.jpg",
+  "img2.jpg",
+  "img3.jpg"
+];
+
+let i = 0;
+function changeImage(){
+  const img = document.getElementById("slide");
+  img.style.opacity = 0;
+  setTimeout(()=>{
+    img.src = images[i];
+    img.style.opacity = 1;
+    i = (i+1)%images.length;
+  },500);
+}
+setInterval(changeImage,5000);
+changeImage();
+
+// СЪОБЩЕНИЯ
+const messages = [
+  "📢 Добре дошли в СУ Св. Климент Охридски",
+  "📌 Следете новините на сайта",
+  "🎓 Успешен учебен ден!"
+];
+
+let m = 0;
+function changeText(){
+  ticker-text.innerText = messages[m];
+  m = (m+1)%messages.length;
+}
+setInterval(changeText,8000);
+changeText();
+
 </script>
 
 </body>
